@@ -35,6 +35,7 @@ class RegularModel(nn.Module):
     def __init__(self):
         super(RegularModel, self).__init__()
         self.head = nn.Sequential(
+            nn.Flatten(),
             nn.Linear(3 * 32 * 32, 512),  # Ensure this layer outputs 512 features
             nn.ReLU()
         )
@@ -151,8 +152,8 @@ print("Evaluating Regular Model before knowledge distillation...")
 evaluate_model(regular, testloader)
 
 # Distill knowledge into CNN
-cnn.train()
-for epoch in range(5):
+# cnn.train()
+for epoch in range(20):
     running_loss = 0.0
     for inputs, labels in trainloader:
         inputs, labels = inputs.to(device), labels.to(device)
@@ -170,8 +171,8 @@ for epoch in range(5):
     print(f"Distillation Epoch {epoch+1}, Loss: {running_loss/len(trainloader):.4f}")
 
 # Distill knowledge into Regular model
-regular.train()
-for epoch in range(5):
+# regular.train()
+for epoch in range(20):
     running_loss = 0.0
     for inputs, labels in trainloader:
         inputs, labels = inputs.to(device), labels.to(device)
