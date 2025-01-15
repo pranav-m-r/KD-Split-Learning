@@ -147,10 +147,14 @@ print("Evaluating CNN before knowledge distillation...")
 evaluate_model(cnn, testloader)
 print("Evaluating Regular Model before knowledge distillation...")
 evaluate_model(regular, testloader)
+print("Evaluating CNN's teacher before knowledge distillation...")
+evaluate_model(teacher_for_cnn, testloader)
+print("Evaluating Regular Model's teacher before knowledge distillation...")
+evaluate_model(teacher_for_regular, testloader)
 
 # Distill knowledge into CNN
 # cnn.train()
-for epoch in range(20):
+for epoch in range(5):
     running_loss = 0.0
     for inputs, labels in trainloader:
         inputs, labels = inputs.to(device), labels.to(device)
@@ -169,7 +173,7 @@ for epoch in range(20):
 
 # Distill knowledge into Regular model
 # regular.train()
-for epoch in range(20):
+for epoch in range(5):
     running_loss = 0.0
     for inputs, labels in trainloader:
         inputs, labels = inputs.to(device), labels.to(device)
