@@ -3,7 +3,6 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
-import copy
 
 # Define CNN model
 class CNNModel(nn.Module):
@@ -52,10 +51,10 @@ class RegularModel(nn.Module):
 
 # Combine head of one model with the tail of another
 class CombinedModel(nn.Module):
-    def __init__(self, head, shared_layer, tail):
+    def __init__(self, head, tail):
         super(CombinedModel, self).__init__()
-        self.head = copy.deepcopy(head)
-        self.tail = copy.deepcopy(tail)
+        self.head = head
+        self.tail = tail
 
     def forward(self, x):
         x = self.head(x)
@@ -90,9 +89,8 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False)
 # Initialize models
 cnn = CNNModel()
 regular = RegularModel()
-shared_layer = SharedLayer()
-teacher_for_regular = CombinedModel(regular.head, shared_layer, cnn.tail)
-teacher_for_cnn = CombinedModel(cnn.head, shared_layer, regular.tail)
+teacher_for_regular = CombinedModel(regular.head, cnn.tail)
+teacher_for_cnn = CombinedModel(cnn.head, regular.tail)
 
 # Move models to device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -100,7 +98,6 @@ cnn = cnn.to(device)
 regular = regular.to(device)
 teacher_for_regular = teacher_for_regular.to(device)
 teacher_for_cnn = teacher_for_cnn.to(device)
-shared_layer = shared_layer.to(device)
 
 # Optimizers
 cnn_optimizer = optim.SGD(cnn.parameters(), lr=0.01, momentum=0.9)
